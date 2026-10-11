@@ -7,6 +7,7 @@ EMAIL = "ficonvention@gmail.com"
 SITE = dict(
     name="Floating Island", domain="www.floatingisland.co.kr",
     brand_main="FLOATING ISLAND", brand_sub="세빛섬 플로팅아일랜드 컨벤션",
+    fonts="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400&family=Playfair+Display:ital,wght@0,400;1,400&family=Noto+Sans+KR:wght@300;400;500;700&display=swap",
     desc="Floating Island Convention — Seoul's representative MICE unique venue on the Han River at Some Sevit (Sebitseom). Convention Hall, Villa de Noche, Vista, Terrace Room, Rive Gauche, Medici, Orchid, Garden, Rooftop.",
     og="2649b2_cdd8e2a0c9904b90963531e652bdfa98~mv2.jpeg",
     address="Some Sevit, 650 Banpo-dong, Seocho-gu, Seoul, Korea (서울 서초구 올림픽대로 2085-14 세빛섬)",
@@ -25,12 +26,45 @@ SITE = dict(
 )
 
 THEME = """:root{
-  --ink:#0f1b2d; --ink-soft:#4b5666; --line:#e2e4e8; --paper:#ffffff; --cream:#f3f5f8;
-  --gold:#c9b27a; --gold-deep:#9d8650; --sky:#daeef3;
-  --serif:"Cormorant Garamond",Georgia,serif; --sans:"Noto Sans KR","Apple SD Gothic Neo",sans-serif;
-  --wrap:1180px; --header-h:76px;
+  --ink:#242323; --ink-soft:#737373; --line:#e4e4e4; --paper:#ffffff; --cream:#f5f5f5;
+  --gold:#437b93; --gold-deep:#2f5f74; --grey:#a0a09f; --sky:#daeef3;
+  --serif:"Playfair Display",Georgia,serif; --sans:"Josefin Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;
+  --wrap:980px; --header-h:80px;
 }
-.site-footer{background:#0b1522}.cta-band{background:#0f1b2d}
+body{font-weight:300}
+.site-header{background:#fff;border-bottom:1px solid var(--line)}
+.has-hero .site-header,.has-hero .site-header.scrolled{background:#fff !important;border-color:var(--line);color:var(--ink)}
+.has-hero .site-header .site-nav a,.has-hero .site-header .brand{color:var(--ink)}
+.has-hero .site-header .nav-toggle{color:var(--ink)}
+.brand-main{font-weight:300;letter-spacing:.3em}.brand-sub{display:none}
+.site-nav a{font-size:14px;letter-spacing:.02em;text-transform:none !important;font-weight:300;color:var(--ink)}
+.site-nav li.active > a{color:var(--grey)}.site-nav li > a::after{display:none}
+.hero{margin-top:var(--header-h);min-height:577px}
+.hero::before{background:rgba(0,0,0,.15)}
+.hero h1{font-family:var(--sans);font-weight:300;font-size:clamp(2rem,6vw,4rem);letter-spacing:.2em;text-indent:.2em;margin-bottom:.2em}
+.hero .lead{font-family:var(--serif);font-style:italic;font-size:1.25rem;letter-spacing:.1em;border-bottom:1px solid rgba(255,255,255,.7);display:inline-block;padding:0 1.5rem .6rem}
+.hero .eyebrow{display:none}
+.hero-cta{margin-top:1.5rem}
+h2{font-family:var(--sans);font-weight:300;font-size:25px;letter-spacing:.1em;text-transform:uppercase}
+h3{font-family:var(--sans);font-weight:300;font-size:18px;letter-spacing:.06em}
+.eyebrow{color:var(--grey);letter-spacing:.3em}
+.sub,.split-text p,.things p,.prose p{color:var(--ink-soft);font-size:15px;line-height:1.9}
+.btn{border-color:var(--ink);color:var(--ink);font-weight:300;letter-spacing:.2em}.btn:hover{background:var(--ink);color:#fff}
+.btn-light{background:#fff;border-color:#fff;color:var(--ink)}.btn-light:hover{background:transparent;border-color:#fff;color:#fff}
+.btn-outline-dark{border-color:var(--gold);color:var(--gold)}.btn-outline-dark:hover{background:var(--gold);color:#fff}
+.section.alt{background:var(--cream)}
+.cta-band{background:#242323;color:#a0a09f}.cta-band h2{color:#f5f5f5}
+.cta-band .btn-light{background:transparent;border-color:#f5f5f5;color:#f5f5f5}.cta-band .btn-light:hover{background:#f5f5f5;color:#242323}
+.cta-band .btn-outline{border-color:#a0a09f;color:#a0a09f}
+.hall-txt h3{font-family:var(--sans);font-weight:300;letter-spacing:.12em;text-transform:uppercase;font-size:1.2rem}
+.hall-txt .eyebrow{color:#fff;opacity:.8}
+.page-hero h1{font-family:var(--sans);font-weight:300;letter-spacing:.2em;text-transform:uppercase;font-size:clamp(1.8rem,5vw,3rem)}
+.page-hero .lead{font-family:var(--serif);font-style:italic}
+.page-hero .eyebrow{color:#fff;opacity:.85}
+.site-footer{background:#242323;color:#a0a09f;font-weight:300}
+.f-brand{font-family:var(--sans);font-weight:300;letter-spacing:.3em}
+.contact-card{background:var(--cream);border-left-color:var(--gold)}
+.jump a{color:var(--ink-soft)}
 """
 
 J = lambda ids, o="L": [(f"2649b2_{i}~mv2.jpg", o) for i in ids]
@@ -65,9 +99,8 @@ def hall_card(h):
 home = f"""
 <section class="hero" style="background-image:url('{wix('2649b2_cdd8e2a0c9904b90963531e652bdfa98~mv2.jpeg', 1920, 1280)}')">
   <div class="hero-inner">
-    <p class="eyebrow">Seoul · Han River · Some Sevit</p>
-    <h1>Floating Island<br>Unique Venue</h1>
-    <p class="lead">Seoul's representative MICE unique venue on the Han River</p>
+    <h1>Floating Island</h1>
+    <p class="lead">Unique Venue</p>
     <div class="hero-cta">
       <a class="btn btn-light" href="#halls">Explore the venue</a>
       <a class="btn btn-outline" href="contact.html">Inquiry</a>
