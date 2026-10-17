@@ -249,3 +249,10 @@ p{margin:0 0 1em}
 .lang-switch a{color:var(--ink);opacity:.6}.lang-switch a.on{opacity:1;font-weight:500;border-bottom:1px solid currentColor}
 .lang-switch span{opacity:.4}
 @media (max-width:960px){.lang-switch{position:absolute;right:64px;top:50%;transform:translateY(-50%);margin-left:0}}
+
+/* footer Instagram list — same format as marinapark.co.kr (2026-10-17) */
+.f-social-title{font-family:var(--sans);font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;opacity:.7;margin:0 0 .6rem}
+.f-social.f-social-list{display:flex;flex-direction:column;align-items:flex-start;gap:.55rem}
+.f-social-list a{display:flex;align-items:center;gap:.45rem;color:inherit;font-size:.85rem;letter-spacing:.02em;text-decoration:none}
+.f-social-list svg{width:18px;height:18px;flex:none}
+.f-social-list .s-handle{opacity:.75;font-weight:400}
