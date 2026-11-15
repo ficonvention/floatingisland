@@ -58,7 +58,7 @@
       <label>예상 인원<input type="text" name="guests"></label>
       <label class="full">문의 내용<textarea name="message" rows="5" required></textarea></label>
       <button type="submit" class="btn full">보내기</button>
-      <p class="form-hint full">전송 버튼을 누르면 메일 앱이 열립니다. 메일 앱이 없으시면 <a href="mailto:ficonvention@gmail.com">ficonvention@gmail.com</a>로 직접 보내 주세요.</p>
+      <p class="form-hint full">보내기를 누르면 바로 접수되며, 담당자가 확인 후 이메일 또는 전화로 답변드립니다. 급하신 경우 <a href="tel:+8225372440">02-537-2440</a>으로 연락 주세요.</p>
     </form>
 </div></section>
 <section class="map-section"><iframe title="Floating Island 위치" src="https://www.google.com/maps?q=%EC%84%B8%EB%B9%9B%EC%84%AC&output=embed" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe></section>
@@ -79,6 +79,26 @@
   <div class="wrap copyright">© 2026 세빛섬 플로팅아일랜드 컨벤션. All rights reserved.</div>
 </footer>
 <div class="lightbox" id="lightbox" hidden><button class="lb-close" aria-label="닫기">&times;</button><button class="lb-prev" aria-label="이전">&#8249;</button><img alt=""><button class="lb-next" aria-label="다음">&#8250;</button></div>
-<script src="js/main.js"></script>
+<script src="js/main.js"></script><style>.contact-done{border:1px solid var(--gold);padding:1.6rem;background:var(--cream)}.contact-done h3{margin:0 0 .5rem}.contact-done p{margin:0;color:var(--ink-soft)}</style>
+<script>
+(function(){
+  var f=document.querySelector('form.contact-form'); if(!f) return;
+  var EP="https://docs.google.com/forms/d/e/1FAIpQLScXnJP85ovYGhQFxCGV9sFtwmgF-bZ5SPG5069Pm2y0iOUSmw/formResponse", MAP={"name":"1672884242","email":"1164802687","phone":"1820081115","event":"1214496279","date":"1691208251","guests":"1283550413","message":"1821521945","lang":"542972243"}, LANG="ko", DONE_H="문의가 접수되었습니다", DONE_P="빠른 시간 안에 이메일 또는 전화로 답변드리겠습니다. 감사합니다.", SENDING="전송 중…", FAIL="전송에 실패했습니다. ficonvention@gmail.com 으로 직접 보내 주세요.";
+  f.removeAttribute('action'); f.removeAttribute('enctype'); f.setAttribute('novalidate','');
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(!f.name.value.trim()||!f.email.value.trim()||!f.message.value.trim()){ f.reportValidity&&f.reportValidity(); return; }
+    var btn=f.querySelector('button[type=submit]'), label=btn.textContent; btn.disabled=true; btn.textContent=SENDING;
+    var data={name:f.name.value.trim(),email:f.email.value.trim(),phone:f.phone.value.trim(),event:f.event.value,date:f.date.value,guests:f.guests.value.trim(),message:f.message.value.trim(),lang:LANG};
+    var body=new URLSearchParams(); Object.keys(MAP).forEach(function(k){body.append('entry.'+MAP[k],data[k]||'');});
+    fetch(EP,{method:'POST',mode:'no-cors',body:body}).then(function(){
+      var box=document.createElement('div'); box.className='contact-done';
+      box.innerHTML='<h3></h3><p></p>'; box.querySelector('h3').textContent=DONE_H; box.querySelector('p').textContent=DONE_P;
+      f.parentNode.replaceChild(box,f); box.scrollIntoView({behavior:'smooth',block:'center'});
+    }).catch(function(){ btn.disabled=false; btn.textContent=label; alert(FAIL); });
+  });
+})();
+</script>
+
 </body>
 </html>
