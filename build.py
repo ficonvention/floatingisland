@@ -22,6 +22,7 @@ SITE = dict(
         ("garden.html", "4F Garden", []),
         ("rooftop.html", "Rooftop", []),
         ("contact.html", "Contact", []),
+        ("self-quote.html", "Self Quote", []),
     ],
 )
 
@@ -104,6 +105,7 @@ home = f"""
     <div class="hero-cta">
       <a class="btn btn-light" href="#halls">Explore the venue</a>
       <a class="btn btn-outline" href="contact.html">Inquiry</a>
+      <a class="btn btn-outline" href="self-quote.html">Self Quote</a>
     </div>
   </div>
 </section>
