@@ -102,14 +102,16 @@
       var preSetupRate = venueSelect.value === 'convention' ? 15000000 :
         (venueSelect.value === 'anniversary' || venueSelect.value === 'marina' ? 10000000 : venue.base);
       var preSetup = form.elements.preSetup.checked ? preSetupRate : 0;
-      var bouquet = parseInt(form.elements.bouquet.value, 10) || 0;
+      var bouquetQty = Math.max(0, parseInt(form.elements.bouquetQty.value, 10) || 0);
+      var bouquetUnit = parseInt(form.elements.bouquet.value, 10) || 0;
+      var bouquets = bouquetQty * bouquetUnit;
       var centerpieceQty = Math.max(0, parseInt(form.elements.centerpieceQty.value, 10) || 0);
       var centerpieceUnit = parseInt(form.elements.centerpiece.value, 10) || 0;
       var centerpieces = centerpieceQty * centerpieceUnit;
       var photographer = parseInt(form.elements.photographer.value, 10) || 0;
       var corkageQty = Math.max(0, parseInt(form.elements.corkageQty.value, 10) || 0);
       var corkage = corkageQty * 35000;
-      var options = preSetup + bouquet + centerpieces + photographer + corkage;
+      var options = preSetup + bouquets + centerpieces + photographer + corkage;
       var subtotal = food + venueFee + venue.facility + options;
       var vat = Math.round(subtotal * 0.1);
       var total = subtotal + vat;
@@ -120,7 +122,6 @@
       var coffeeLabel = form.elements.coffeeBreak.options[form.elements.coffeeBreak.selectedIndex].text;
       var canapeLabel = form.elements.canape.options[form.elements.canape.selectedIndex].text;
       var beverageLabel = form.elements.beverage.options[form.elements.beverage.selectedIndex].text;
-      var bouquetLabel = form.elements.bouquet.options[form.elements.bouquet.selectedIndex].text;
       var photographerLabel = form.elements.photographer.options[form.elements.photographer.selectedIndex].text;
       result.innerHTML =
         '<h3>' + (ko ? '기업행사 예상 견적' : 'Corporate event estimate') + '</h3>' +
@@ -132,7 +133,7 @@
         row(ko ? '대관료' : 'Venue rental', venueFee, waiver) +
         row(ko ? '시설 사용료' : 'Facility fee', venue.facility, '') +
         (preSetup ? row(ko ? '전일 셋팅' : 'Previous-day setup', preSetup, '') : '') +
-        (bouquet ? row(ko ? '꽃다발' : 'Bouquet', bouquet, bouquetLabel) : '') +
+        (bouquets ? row(ko ? '꽃다발' : 'Bouquets', bouquets, money(bouquetUnit) + ' × ' + bouquetQty + (ko ? '개' : '')) : '') +
         (centerpieces ? row(ko ? '센터피스' : 'Centerpieces', centerpieces, money(centerpieceUnit) + ' × ' + centerpieceQty) : '') +
         (photographer ? row(ko ? '촬영 옵션' : 'Photography package', photographer, photographerLabel) : '') +
         (corkage ? row(ko ? '주류 반입료' : 'Corkage', corkage, money(35000) + ' × ' + corkageQty + (ko ? '병' : ' bottles')) : '') +
