@@ -102,12 +102,14 @@
       var preSetupRate = venueSelect.value === 'convention' ? 15000000 :
         (venueSelect.value === 'anniversary' || venueSelect.value === 'marina' ? 10000000 : venue.base);
       var preSetup = form.elements.preSetup.checked ? preSetupRate : 0;
-      var tableQty = Math.max(0, parseInt(form.elements.tableQty.value, 10) || 0);
-      var tableUnit = parseInt(form.elements.tableFlower.value, 10) || 0;
-      var tableFlower = tableQty * tableUnit;
+      var bouquet = parseInt(form.elements.bouquet.value, 10) || 0;
+      var centerpieceQty = Math.max(0, parseInt(form.elements.centerpieceQty.value, 10) || 0);
+      var centerpieceUnit = parseInt(form.elements.centerpiece.value, 10) || 0;
+      var centerpieces = centerpieceQty * centerpieceUnit;
+      var photographer = parseInt(form.elements.photographer.value, 10) || 0;
       var corkageQty = Math.max(0, parseInt(form.elements.corkageQty.value, 10) || 0);
       var corkage = corkageQty * 35000;
-      var options = preSetup + tableFlower + corkage;
+      var options = preSetup + bouquet + centerpieces + photographer + corkage;
       var subtotal = food + venueFee + venue.facility + options;
       var vat = Math.round(subtotal * 0.1);
       var total = subtotal + vat;
@@ -118,6 +120,8 @@
       var coffeeLabel = form.elements.coffeeBreak.options[form.elements.coffeeBreak.selectedIndex].text;
       var canapeLabel = form.elements.canape.options[form.elements.canape.selectedIndex].text;
       var beverageLabel = form.elements.beverage.options[form.elements.beverage.selectedIndex].text;
+      var bouquetLabel = form.elements.bouquet.options[form.elements.bouquet.selectedIndex].text;
+      var photographerLabel = form.elements.photographer.options[form.elements.photographer.selectedIndex].text;
       result.innerHTML =
         '<h3>' + (ko ? '기업행사 예상 견적' : 'Corporate event estimate') + '</h3>' +
         '<p class="estimate-meta">' + (ko ? '행사 시작' : 'Event starts') + ': ' + (form.elements.eventDate.value || (ko ? '날짜 미정' : 'date TBD')) + ' ' + form.elements.eventPeriod.value + ' ' + (form.elements.eventTime.value || '') + '</p>' +
@@ -128,10 +132,12 @@
         row(ko ? '대관료' : 'Venue rental', venueFee, waiver) +
         row(ko ? '시설 사용료' : 'Facility fee', venue.facility, '') +
         (preSetup ? row(ko ? '전일 셋팅' : 'Previous-day setup', preSetup, '') : '') +
-        (tableFlower ? row(ko ? '테이블 꽃' : 'Table flowers', tableFlower, money(tableUnit) + ' × ' + tableQty) : '') +
+        (bouquet ? row(ko ? '꽃다발' : 'Bouquet', bouquet, bouquetLabel) : '') +
+        (centerpieces ? row(ko ? '센터피스' : 'Centerpieces', centerpieces, money(centerpieceUnit) + ' × ' + centerpieceQty) : '') +
+        (photographer ? row(ko ? '촬영 옵션' : 'Photography package', photographer, photographerLabel) : '') +
         (corkage ? row(ko ? '주류 반입료' : 'Corkage', corkage, money(35000) + ' × ' + corkageQty + (ko ? '병' : ' bottles')) : '') +
         (form.elements.banner.value === 'request' ? requestRow(ko ? '배너' : 'Banner') : '') +
-        (form.elements.photographer.value === 'request' ? requestRow(ko ? '포토그래퍼' : 'Photographer') : '') +
+
         '<div class="estimate-row estimate-sub"><span>' + (ko ? '소계' : 'Subtotal') + '</span><strong>' + money(subtotal) + '</strong></div>' +
         '<div class="estimate-row"><span>' + (ko ? '부가세 10%' : 'VAT 10%') + '</span><strong>' + money(vat) + '</strong></div>' +
         '<div class="estimate-row estimate-total"><span>' + (ko ? '예상 합계' : 'Estimated total') + '</span><strong>' + money(total) + '</strong></div>';
