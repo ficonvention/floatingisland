@@ -9,10 +9,10 @@
   // 선택 항목·단가 출처: *Annie 견적서.xlsx, *MP #1.xlsx,
   // 2025-10-31-dekalaser-anniversary-quotation.xlsx 및 회사 기업행사 견적 양식.
   var venues = {
-    convention: { nameKo: '2F 컨벤션홀', nameEn: '2F Convention Hall', base: 20000000, facility: 3000000, tiers: [[40000000, 0], [30000000, 5000000], [20000000, 10000000]] },
+    convention: { nameKo: '2F 컨벤션홀', nameEn: '2F Convention Hall', maxGuests: 600, base: 20000000, facility: 3000000, tiers: [[40000000, 0], [30000000, 5000000], [20000000, 10000000]] },
     villa: { nameKo: '2F 빌라 드 노체', nameEn: '2F Villa de Noche', base: 7000000, facility: 1000000, tiers: [[20000000, 0], [10000000, 5000000]] },
     vista: { nameKo: '3F 비스타', nameEn: '3F Vista', base: 15000000, facility: 2000000, tiers: [[20000000, 0], [12000000, 5000000]] },
-    terrace: { nameKo: '3F 테라스룸', nameEn: '3F Terrace Room', base: 1500000, facility: 0, tiers: [[3000000, 0]] },
+    terrace: { nameKo: '3F 테라스룸', nameEn: '3F Terrace Room', maxGuests: 60, base: 1500000, facility: 0, tiers: [[3000000, 0]] },
     rive: { nameKo: '3F 리브 고쉬', nameEn: '3F Rive Gauche', base: 5000000, facility: 2000000, tiers: [[10000000, 0]] },
     orchid: { nameKo: '3F 오키드룸', nameEn: '3F Orchid Room', base: 5000000, facility: 2000000, tiers: [[10000000, 0]] },
     rooftop: { nameKo: '4층 루프탑', nameEn: '4F Rooftop', base: 15000000, facility: 2000000, tiers: [[30000000, 0]] },
@@ -60,6 +60,19 @@
       venueSelect.appendChild(option);
     });
 
+    var venueGuide = form.querySelector('[data-venue-guide]');
+    function updateVenueGuide(guests) {
+      var suitable = [];
+      Object.keys(venues).forEach(function (key) {
+        var item = venues[key];
+        if (item.maxGuests && guests <= item.maxGuests) suitable.push(ko ? item.nameKo : item.nameEn);
+      });
+      if (!venueGuide) return;
+      venueGuide.innerHTML = '<strong>' + (ko ? guests + '명 기준 공개 수용 인원에 맞는 홀' : 'Venues matching published capacity for ' + guests + ' guests') + '</strong><span>' +
+        (suitable.length ? suitable.join(' · ') : (ko ? '공식 수용 인원 기준 해당 홀 없음' : 'No venue within the published capacity range')) +
+        '</span><small>' + (ko ? '홈페이지에 수용 인원이 공개된 컨벤션홀·테라스룸 기준입니다. 그 외 공간은 행사 배치에 따라 담당자가 확인합니다.' : 'Based on the published capacities for Convention Hall and Terrace Room. Other venues require layout confirmation by a coordinator.') + '</small>';
+    }
+
     function money(value) { return won.format(Math.round(value)) + (ko ? '원' : ' KRW'); }
     function row(label, value, detail) {
       return '<div class="estimate-row"><span>' + label + (detail ? '<small>' + detail + '</small>' : '') + '</span><strong>' + money(value) + '</strong></div>';
@@ -70,6 +83,7 @@
     function calculate() {
       var venue = venues[venueSelect.value] || venues.convention;
       var guests = Math.max(10, parseInt(form.elements.guests.value, 10) || 10);
+      updateVenueGuide(guests);
       var meal = parseInt(form.elements.meal.value, 10) || 0;
       var coffeeBreak = parseInt(form.elements.coffeeBreak.value, 10) || 0;
       var canape = parseInt(form.elements.canape.value, 10) || 0;
@@ -92,7 +106,7 @@
       var tableUnit = parseInt(form.elements.tableFlower.value, 10) || 0;
       var tableFlower = tableQty * tableUnit;
       var corkageQty = Math.max(0, parseInt(form.elements.corkageQty.value, 10) || 0);
-      var corkage = corkageQty * 30000;
+      var corkage = corkageQty * 35000;
       var options = preSetup + tableFlower + corkage;
       var subtotal = food + venueFee + venue.facility + options;
       var vat = Math.round(subtotal * 0.1);
@@ -115,7 +129,7 @@
         row(ko ? '시설 사용료' : 'Facility fee', venue.facility, '') +
         (preSetup ? row(ko ? '전일 셋팅' : 'Previous-day setup', preSetup, '') : '') +
         (tableFlower ? row(ko ? '테이블 꽃' : 'Table flowers', tableFlower, money(tableUnit) + ' × ' + tableQty) : '') +
-        (corkage ? row(ko ? '주류 반입료' : 'Corkage', corkage, money(30000) + ' × ' + corkageQty) : '') +
+        (corkage ? row(ko ? '주류 반입료' : 'Corkage', corkage, money(35000) + ' × ' + corkageQty + (ko ? '병' : ' bottles')) : '') +
         (form.elements.banner.value === 'request' ? requestRow(ko ? '배너' : 'Banner') : '') +
         (form.elements.photographer.value === 'request' ? requestRow(ko ? '포토그래퍼' : 'Photographer') : '') +
         '<div class="estimate-row estimate-sub"><span>' + (ko ? '소계' : 'Subtotal') + '</span><strong>' + money(subtotal) + '</strong></div>' +
