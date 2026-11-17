@@ -82,7 +82,9 @@
         }
         return false;
       });
-      var preSetup = form.elements.preSetup.checked ? 7000000 : 0;
+      var preSetupRate = venueSelect.value === 'convention' ? 15000000 :
+        (venueSelect.value === 'anniversary' || venueSelect.value === 'marina' ? 10000000 : venue.base);
+      var preSetup = form.elements.preSetup.checked ? preSetupRate : 0;
       var tableQty = Math.max(0, parseInt(form.elements.tableQty.value, 10) || 0);
       var tableUnit = parseInt(form.elements.tableFlower.value, 10) || 0;
       var tableFlower = tableQty * tableUnit;
@@ -94,6 +96,7 @@
       var total = subtotal + vat;
       form.querySelector('[data-rental-display]').textContent = money(venueFee) + (waiver ? ' · ' + waiver : '');
       form.querySelector('[data-facility-display]').textContent = money(venue.facility);
+      form.querySelector('[data-presetup-display]').textContent = money(preSetupRate);
       var mealLabel = form.elements.meal.options[form.elements.meal.selectedIndex].text;
       var coffeeLabel = form.elements.coffeeBreak.options[form.elements.coffeeBreak.selectedIndex].text;
       var canapeLabel = form.elements.canape.options[form.elements.canape.selectedIndex].text;
