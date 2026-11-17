@@ -6,8 +6,8 @@
 
   var ko = document.documentElement.lang === 'ko';
   var won = new Intl.NumberFormat('ko-KR');
-  // 단가 출처: 회사 기업행사 견적 양식(FIC·Anniversary·Marina Park).
-  // 갤러리는 최근 기업행사 견적의 별도 대관·시설 사용 기준을 적용한다.
+  // 선택 항목·단가 출처: *Annie 견적서.xlsx, *MP #1.xlsx,
+  // 2025-10-31-dekalaser-anniversary-quotation.xlsx 및 회사 기업행사 견적 양식.
   var venues = {
     convention: { nameKo: '2F 컨벤션홀', nameEn: '2F Convention Hall', base: 20000000, facility: 3000000, tiers: [[40000000, 0], [30000000, 5000000], [20000000, 10000000]] },
     villa: { nameKo: '2F 빌라 드 노체', nameEn: '2F Villa de Noche', base: 7000000, facility: 1000000, tiers: [[20000000, 0], [10000000, 5000000]] },
@@ -68,8 +68,10 @@
       var venue = venues[venueSelect.value] || venues.convention;
       var guests = Math.max(10, parseInt(form.elements.guests.value, 10) || 10);
       var meal = parseInt(form.elements.meal.value, 10) || 0;
+      var coffeeBreak = parseInt(form.elements.coffeeBreak.value, 10) || 0;
+      var canape = parseInt(form.elements.canape.value, 10) || 0;
       var beverage = parseInt(form.elements.beverage.value, 10) || 0;
-      var food = guests * (meal + beverage);
+      var food = guests * (meal + coffeeBreak + canape + beverage);
       var venueFee = venue.base;
       var waiver = '';
       venue.tiers.some(function (tier) {
@@ -80,25 +82,34 @@
         }
         return false;
       });
-      var flower = form.elements.flower.checked ? 1000000 : 0;
+      var preSetup = form.elements.preSetup.checked ? 7000000 : 0;
       var tableQty = Math.max(0, parseInt(form.elements.tableQty.value, 10) || 0);
       var tableUnit = parseInt(form.elements.tableFlower.value, 10) || 0;
       var tableFlower = tableQty * tableUnit;
-      var bannerQty = Math.max(0, parseInt(form.elements.bannerQty.value, 10) || 0);
-      var banner = bannerQty * 30000;
-      var options = flower + tableFlower + banner;
+      var corkageQty = Math.max(0, parseInt(form.elements.corkageQty.value, 10) || 0);
+      var corkage = corkageQty * 30000;
+      var options = preSetup + tableFlower + corkage;
       var subtotal = food + venueFee + venue.facility + options;
       var vat = Math.round(subtotal * 0.1);
       var total = subtotal + vat;
       form.querySelector('[data-rental-display]').textContent = money(venueFee) + (waiver ? ' · ' + waiver : '');
       form.querySelector('[data-facility-display]').textContent = money(venue.facility);
+      var mealLabel = form.elements.meal.options[form.elements.meal.selectedIndex].text;
+      var coffeeLabel = form.elements.coffeeBreak.options[form.elements.coffeeBreak.selectedIndex].text;
+      var canapeLabel = form.elements.canape.options[form.elements.canape.selectedIndex].text;
+      var beverageLabel = form.elements.beverage.options[form.elements.beverage.selectedIndex].text;
       result.innerHTML =
         '<h3>' + (ko ? '기업행사 예상 견적' : 'Corporate event estimate') + '</h3>' +
         '<p class="estimate-meta">' + (ko ? '행사 시작' : 'Event starts') + ': ' + (form.elements.eventDate.value || (ko ? '날짜 미정' : 'date TBD')) + ' ' + (form.elements.eventTime.value || '') + '</p>' +
-        row(ko ? '식음료' : 'Food & beverage', food, money(meal + beverage) + ' × ' + guests) +
+        (meal ? row(ko ? '음식 메뉴' : 'Food menu', meal * guests, mealLabel + ' × ' + guests) : '') +
+        (coffeeBreak ? row(ko ? '커피 브레이크' : 'Coffee break', coffeeBreak * guests, coffeeLabel + ' × ' + guests) : '') +
+        (canape ? row(ko ? '카나페 리셉션' : 'Canapé reception', canape * guests, canapeLabel + ' × ' + guests) : '') +
+        (beverage ? row(ko ? '음료 패키지' : 'Beverage package', beverage * guests, beverageLabel + ' × ' + guests) : '') +
         row(ko ? '대관료' : 'Venue rental', venueFee, waiver) +
         row(ko ? '시설 사용료' : 'Facility fee', venue.facility, '') +
-        (options ? row(ko ? '선택 옵션' : 'Options', options, '') : '') +
+        (preSetup ? row(ko ? '사전 셋업' : 'Pre-setup', preSetup, '') : '') +
+        (tableFlower ? row(ko ? '테이블 꽃' : 'Table flowers', tableFlower, money(tableUnit) + ' × ' + tableQty) : '') +
+        (corkage ? row(ko ? '주류 반입료' : 'Corkage', corkage, money(30000) + ' × ' + corkageQty) : '') +
         '<div class="estimate-row estimate-sub"><span>' + (ko ? '소계' : 'Subtotal') + '</span><strong>' + money(subtotal) + '</strong></div>' +
         '<div class="estimate-row"><span>' + (ko ? '부가세 10%' : 'VAT 10%') + '</span><strong>' + money(vat) + '</strong></div>' +
         '<div class="estimate-row estimate-total"><span>' + (ko ? '예상 합계' : 'Estimated total') + '</span><strong>' + money(total) + '</strong></div>';
