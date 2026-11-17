@@ -64,6 +64,9 @@
     function row(label, value, detail) {
       return '<div class="estimate-row"><span>' + label + (detail ? '<small>' + detail + '</small>' : '') + '</span><strong>' + money(value) + '</strong></div>';
     }
+    function requestRow(label) {
+      return '<div class="estimate-row estimate-request"><span>' + label + '<small>' + (ko ? '규격 확인 후 별도 견적' : 'Quoted separately after consultation') + '</small></span><strong>' + (ko ? '상담 요청' : 'Requested') + '</strong></div>';
+    }
     function calculate() {
       var venue = venues[venueSelect.value] || venues.convention;
       var guests = Math.max(10, parseInt(form.elements.guests.value, 10) || 10);
@@ -110,9 +113,11 @@
         (beverage ? row(ko ? '음료 패키지' : 'Beverage package', beverage * guests, beverageLabel + ' × ' + guests) : '') +
         row(ko ? '대관료' : 'Venue rental', venueFee, waiver) +
         row(ko ? '시설 사용료' : 'Facility fee', venue.facility, '') +
-        (preSetup ? row(ko ? '사전 셋업' : 'Pre-setup', preSetup, '') : '') +
+        (preSetup ? row(ko ? '전일 셋팅' : 'Previous-day setup', preSetup, '') : '') +
         (tableFlower ? row(ko ? '테이블 꽃' : 'Table flowers', tableFlower, money(tableUnit) + ' × ' + tableQty) : '') +
         (corkage ? row(ko ? '주류 반입료' : 'Corkage', corkage, money(30000) + ' × ' + corkageQty) : '') +
+        (form.elements.banner.value === 'request' ? requestRow(ko ? '배너' : 'Banner') : '') +
+        (form.elements.photographer.value === 'request' ? requestRow(ko ? '포토그래퍼' : 'Photographer') : '') +
         '<div class="estimate-row estimate-sub"><span>' + (ko ? '소계' : 'Subtotal') + '</span><strong>' + money(subtotal) + '</strong></div>' +
         '<div class="estimate-row"><span>' + (ko ? '부가세 10%' : 'VAT 10%') + '</span><strong>' + money(vat) + '</strong></div>' +
         '<div class="estimate-row estimate-total"><span>' + (ko ? '예상 합계' : 'Estimated total') + '</span><strong>' + money(total) + '</strong></div>';
