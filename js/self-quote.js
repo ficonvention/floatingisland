@@ -66,7 +66,7 @@
     }
     function calculate() {
       var venue = venues[venueSelect.value] || venues.convention;
-      var guests = Math.max(1, parseInt(form.elements.guests.value, 10) || 30);
+      var guests = Math.max(10, parseInt(form.elements.guests.value, 10) || 10);
       var meal = parseInt(form.elements.meal.value, 10) || 0;
       var beverage = parseInt(form.elements.beverage.value, 10) || 0;
       var food = guests * (meal + beverage);
