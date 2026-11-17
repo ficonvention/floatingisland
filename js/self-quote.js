@@ -103,7 +103,7 @@
       var beverageLabel = form.elements.beverage.options[form.elements.beverage.selectedIndex].text;
       result.innerHTML =
         '<h3>' + (ko ? '기업행사 예상 견적' : 'Corporate event estimate') + '</h3>' +
-        '<p class="estimate-meta">' + (ko ? '행사 시작' : 'Event starts') + ': ' + (form.elements.eventDate.value || (ko ? '날짜 미정' : 'date TBD')) + ' ' + (form.elements.eventTime.value || '') + '</p>' +
+        '<p class="estimate-meta">' + (ko ? '행사 시작' : 'Event starts') + ': ' + (form.elements.eventDate.value || (ko ? '날짜 미정' : 'date TBD')) + ' ' + form.elements.eventPeriod.value + ' ' + (form.elements.eventTime.value || '') + '</p>' +
         (meal ? row(ko ? '음식 메뉴' : 'Food menu', meal * guests, mealLabel + ' × ' + guests) : '') +
         (coffeeBreak ? row(ko ? '커피 브레이크' : 'Coffee break', coffeeBreak * guests, coffeeLabel + ' × ' + guests) : '') +
         (canape ? row(ko ? '카나페 리셉션' : 'Canapé reception', canape * guests, canapeLabel + ' × ' + guests) : '') +
