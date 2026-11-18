@@ -48,6 +48,10 @@
     button.addEventListener('click', function () { chooseType(button.getAttribute('data-quote-type'), true); });
   });
 
+  // 인스타그램·외부 링크에서 바로 견적 폼이 보이도록 기본값은 기업행사로 연다.
+  var requestedType = new URLSearchParams(location.search).get('type');
+  chooseType(requestedType === 'wedding' ? 'wedding' : 'corporate', false);
+
   var form = root.querySelector('[data-corporate-form]');
   var result = root.querySelector('[data-corporate-result]');
   if (form && result) {
