@@ -84,15 +84,18 @@
 <script>
 (function(){
   var f=document.querySelector('form.contact-form'); if(!f) return;
-  var EP="https://docs.google.com/forms/d/e/1FAIpQLScXnJP85ovYGhQFxCGV9sFtwmgF-bZ5SPG5069Pm2y0iOUSmw/formResponse", MAP={"name":"1672884242","email":"1164802687","phone":"1820081115","event":"1214496279","date":"1691208251","guests":"1283550413","message":"1821521945","lang":"542972243"}, LANG="ko", DONE_H="문의가 접수되었습니다", DONE_P="빠른 시간 안에 이메일 또는 전화로 답변드리겠습니다. 감사합니다.", SENDING="전송 중…", FAIL="전송에 실패했습니다. ficonvention@gmail.com 으로 직접 보내 주세요.";
+  var MAIL_EP="https://formsubmit.co/ajax/ficonvention@gmail.com", FORM_EP="https://docs.google.com/forms/d/e/1FAIpQLScXnJP85ovYGhQFxCGV9sFtwmgF-bZ5SPG5069Pm2y0iOUSmw/formResponse", MAP={"name":"1672884242","email":"1164802687","phone":"1820081115","event":"1214496279","date":"1691208251","guests":"1283550413","message":"1821521945","lang":"542972243"}, LANG="ko", DONE_H="문의가 접수되었습니다", DONE_P="빠른 시간 안에 이메일 또는 전화로 답변드리겠습니다. 감사합니다.", SENDING="전송 중…", FAIL="전송에 실패했습니다. ficonvention@gmail.com 으로 직접 보내 주세요.";
   f.removeAttribute('action'); f.removeAttribute('enctype'); f.setAttribute('novalidate','');
   f.addEventListener('submit',function(e){
     e.preventDefault();
     if(!f.name.value.trim()||!f.email.value.trim()||!f.message.value.trim()){ f.reportValidity&&f.reportValidity(); return; }
     var btn=f.querySelector('button[type=submit]'), label=btn.textContent; btn.disabled=true; btn.textContent=SENDING;
     var data={name:f.name.value.trim(),email:f.email.value.trim(),phone:f.phone.value.trim(),event:f.event.value,date:f.date.value,guests:f.guests.value.trim(),message:f.message.value.trim(),lang:LANG};
-    var body=new URLSearchParams(); Object.keys(MAP).forEach(function(k){body.append('entry.'+MAP[k],data[k]||'');});
-    fetch(EP,{method:'POST',mode:'no-cors',body:body}).then(function(){
+    var subject='[플로팅아일랜드 새 문의] '+(data.date||'날짜 미정')+' · '+data.name+(data.guests?' · '+data.guests+'명':'');
+    var mail={_subject:subject,_template:'box',_replyto:data.email,'이름':data.name,'이메일':data.email,'전화':data.phone||'미입력','행사 유형':data.event||'미입력','희망 날짜':data.date||'미입력','예상 인원':data.guests||'미입력','문의 내용':data.message,'언어':'한국어'};
+    fetch(MAIL_EP,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(mail)}).then(function(r){return r.json().then(function(j){if(!r.ok||String(j.success)!=='true') throw new Error('mail delivery failed');});}).then(function(){
+      var body=new URLSearchParams(); Object.keys(MAP).forEach(function(k){body.append('entry.'+MAP[k],data[k]||'');});
+      fetch(FORM_EP,{method:'POST',mode:'no-cors',body:body}).catch(function(){});
       var box=document.createElement('div'); box.className='contact-done';
       box.innerHTML='<h3></h3><p></p>'; box.querySelector('h3').textContent=DONE_H; box.querySelector('p').textContent=DONE_P;
       f.parentNode.replaceChild(box,f); box.scrollIntoView({behavior:'smooth',block:'center'});

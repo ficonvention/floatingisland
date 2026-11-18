@@ -84,15 +84,18 @@
 <script>
 (function(){
   var f=document.querySelector('form.contact-form'); if(!f) return;
-  var EP="https://docs.google.com/forms/d/e/1FAIpQLScXnJP85ovYGhQFxCGV9sFtwmgF-bZ5SPG5069Pm2y0iOUSmw/formResponse", MAP={"name":"1672884242","email":"1164802687","phone":"1820081115","event":"1214496279","date":"1691208251","guests":"1283550413","message":"1821521945","lang":"542972243"}, LANG="en", DONE_H="Thank you — your inquiry has been received", DONE_P="We will get back to you shortly by e-mail or phone.", SENDING="Sending…", FAIL="Sending failed. Please e-mail ficonvention@gmail.com directly.";
+  var MAIL_EP="https://formsubmit.co/ajax/ficonvention@gmail.com", FORM_EP="https://docs.google.com/forms/d/e/1FAIpQLScXnJP85ovYGhQFxCGV9sFtwmgF-bZ5SPG5069Pm2y0iOUSmw/formResponse", MAP={"name":"1672884242","email":"1164802687","phone":"1820081115","event":"1214496279","date":"1691208251","guests":"1283550413","message":"1821521945","lang":"542972243"}, LANG="en", DONE_H="Thank you — your inquiry has been received", DONE_P="We will get back to you shortly by e-mail or phone.", SENDING="Sending…", FAIL="Sending failed. Please e-mail ficonvention@gmail.com directly.";
   f.removeAttribute('action'); f.removeAttribute('enctype'); f.setAttribute('novalidate','');
   f.addEventListener('submit',function(e){
     e.preventDefault();
     if(!f.name.value.trim()||!f.email.value.trim()||!f.message.value.trim()){ f.reportValidity&&f.reportValidity(); return; }
     var btn=f.querySelector('button[type=submit]'), label=btn.textContent; btn.disabled=true; btn.textContent=SENDING;
     var data={name:f.name.value.trim(),email:f.email.value.trim(),phone:f.phone.value.trim(),event:f.event.value,date:f.date.value,guests:f.guests.value.trim(),message:f.message.value.trim(),lang:LANG};
-    var body=new URLSearchParams(); Object.keys(MAP).forEach(function(k){body.append('entry.'+MAP[k],data[k]||'');});
-    fetch(EP,{method:'POST',mode:'no-cors',body:body}).then(function(){
+    var subject='[Floating Island new inquiry] '+(data.date||'date undecided')+' · '+data.name+(data.guests?' · '+data.guests+' guests':'');
+    var mail={_subject:subject,_template:'box',_replyto:data.email,'Name':data.name,'Email':data.email,'Phone':data.phone||'Not entered','Event type':data.event||'Not entered','Preferred date':data.date||'Not entered','Expected guests':data.guests||'Not entered','Message':data.message,'Language':'English'};
+    fetch(MAIL_EP,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(mail)}).then(function(r){return r.json().then(function(j){if(!r.ok||String(j.success)!=='true') throw new Error('mail delivery failed');});}).then(function(){
+      var body=new URLSearchParams(); Object.keys(MAP).forEach(function(k){body.append('entry.'+MAP[k],data[k]||'');});
+      fetch(FORM_EP,{method:'POST',mode:'no-cors',body:body}).catch(function(){});
       var box=document.createElement('div'); box.className='contact-done';
       box.innerHTML='<h3></h3><p></p>'; box.querySelector('h3').textContent=DONE_H; box.querySelector('p').textContent=DONE_P;
       f.parentNode.replaceChild(box,f); box.scrollIntoView({behavior:'smooth',block:'center'});
